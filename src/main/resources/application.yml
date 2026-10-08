@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: mvt-backend
+
+  # PostgreSQL Database Connection
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mvt_db  # Update port and db name as needed
+    username: postgres
+    password: debasish
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+
+  # JPA / Hibernate Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update # Use 'validate' in production!
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# Custom Application Properties
+app:
+  jwt:
+    # Use a secure, random 256-bit string in production
+    secret: "ThisIsASuperSecretKeyForJwtSignatureWhichMustBeAtLeast32BytesLong"
+    expiration-ms: 86400000 # 24 hours
+  storage:
+    # 'local' for development, 'oci' for production
+    provider: local
+    local:
+      upload-dir: ./uploads/documents
+    oci:
+      bucket-name: mvt-documents
+      namespace: your_oci_namespace
