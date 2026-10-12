@@ -3,33 +3,39 @@ package com.mvt.backApp.patient.entity;
 import com.mvt.backApp.agent.entity.CarePartnerProfile;
 import com.mvt.backApp.common.entity.BaseAuditEntity;
 import com.mvt.backApp.user.entity.User;
-import jakarta.persistence.*;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
-@Data
-@EqualsAndHashCode(callSuper = true)
+@Table(name = "patient_profiles")
 public class PatientProfile extends BaseAuditEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @Column(unique = true, nullable = false, updatable = false)
-    private String patientId; // e.g., PAT-10024
+    @Column(name = "patient_id", nullable = false, unique = true, updatable = false, length = 32)
+    private String patientId;
 
+    @Column(name = "country", nullable = false, length = 100)
     private String country;
 
-    // --- ATTRIBUTION TRACKING ---
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "referred_by_partner_id") // Links to CarePartnerProfile ID
+    @JoinColumn(name = "referred_by_partner_id")
     private CarePartnerProfile referredBy;
 
-    // Privacy compliant identifier mapping
-    private String nationalId; // Used for Indian nationals
-    private String passportNumber; // Used for Internationals
+    @Column(name = "national_id", length = 100)
+    private String nationalId;
+
+    @Column(name = "passport_number", length = 100)
+    private String passportNumber;
 }
