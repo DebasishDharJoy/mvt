@@ -1,24 +1,20 @@
 package com.mvt.backApp.common.exception;
 
+import lombok.Getter;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+@Getter
+public class ApiException extends RuntimeException {
 
-@Data
-@Builder
-@NoArgsConstructor
-public class ApiException extends RuntimeException{
-    private String message;
-    private int status;
-    private String text;
+    private final String code;
+    private final String messageKey;
+    private final int status;
+    private final Object[] messageArguments;
 
-    public ApiException(String message, int status, String text) {
-        super(message);
-        this.message = message;
+    public ApiException(String code, String messageKey, int status, Object... messageArguments) {
+        super(messageKey);
+        this.code = code;
+        this.messageKey = messageKey;
         this.status = status;
-        this.text = text;
+        this.messageArguments = messageArguments == null ? new Object[0] : messageArguments.clone();
     }
 }
-

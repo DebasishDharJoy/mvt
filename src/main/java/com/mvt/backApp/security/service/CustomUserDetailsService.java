@@ -1,10 +1,9 @@
 package com.mvt.backApp.security.service;
 
-import com.mvt.backApp.common.exception.ApiException;
-import com.mvt.backApp.user.entity.User; // CRITICAL: Use your custom entity here
+import com.mvt.backApp.security.model.AuthenticatedUser;
+import com.mvt.backApp.user.entity.User;
 import com.mvt.backApp.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,23 +21,30 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email)
+            throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User not found"
+                ));
 
-        if (!user.isActive()) {
-            throw new ApiException("User account is disabled", HttpStatus.FORBIDDEN.value(), "Account Disabled");
+        if (user.getRole() == null) {
+            throw new UsernameNotFoundException("User role is not assigned");
         }
 
-        List<SimpleGrantedAuthority> authorities = user.getRole().getPermissions().stream()
+        List<SimpleGrantedAuthority> authorities = user.getRole()
+                .getPermissions()
+                .stream()
                 .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                .collect(Collectors.toList());
+                .toList();
 
-        // Fully qualify the Spring Security User to prevent import conflicts
-        return new org.springframework.security.core.userdetails.User(
+        return new AuthenticatedUser(
+                user.getId(),
                 user.getEmail(),
                 user.getPasswordHash(),
-                authorities
+                user.getRole().getName(),
+                authorities,
+                user.isActive() && !user.isDeleted()
         );
     }
 }

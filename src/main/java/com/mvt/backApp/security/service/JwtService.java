@@ -1,39 +1,55 @@
 package com.mvt.backApp.security.service;
 
+import com.mvt.backApp.security.model.AuthenticatedUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import java.util.*;
-import java.util.stream.Collectors;
+
 import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class JwtService {
-    // Generate securely, store in application.yml
-    private final String SECRET = "YourSuperSecretKeyThatIsAtLeast32BytesLongForHmacSha256";
-    private final long EXPIRATION_TIME = 86400000; // 24 hours
+    private final String secret;
+    private final long expirationTime;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET.getBytes());
+    public JwtService(
+            @Value("${app.jwt.secret}") String secret,
+            @Value("${app.jwt.expiration-ms}") long expirationTime
+    ) {
+        if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length < 32) {
+            throw new IllegalArgumentException(
+                    "app.jwt.secret must contain at least 32 UTF-8 bytes"
+            );
+        }
+        this.secret = secret;
+        this.expirationTime = expirationTime;
     }
 
-    public String generateToken(UserDetails userDetails, Long userId) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("userId", userId);
-        // Map permissions directly into the token payload
-        List<String> permissions = userDetails.getAuthorities().stream()
+    public String generateToken(AuthenticatedUser principal) {
+        long now = System.currentTimeMillis();
+        List<String> permissions = principal.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
-        claims.put("permissions", permissions);
+                .sorted()
+                .toList();
+
+        Map<String, Object> claims = Map.of(
+                "userId", principal.getUserId().toString(),
+                "role", principal.getRole(),
+                "permissions", permissions
+        );
 
         return Jwts.builder()
                 .claims(claims)
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .subject(principal.getUsername())
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + expirationTime))
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -44,5 +60,9 @@ public class JwtService {
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+    }
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 }
