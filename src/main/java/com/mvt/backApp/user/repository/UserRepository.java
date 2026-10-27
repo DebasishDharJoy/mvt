@@ -1,14 +1,1 @@
-package com.mvt.backApp.user.repository;
-
-import com.mvt.backApp.user.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
-
-@Repository
-public interface UserRepository extends JpaRepository<User, UUID> {
-    Optional<User> findByEmail(String email);
-    boolean existsByEmail(String email);
-}
+package com.mvt.backApp.user.repository;import com.mvt.backApp.user.entity.User;import org.springframework.data.jpa.repository.*;import org.springframework.stereotype.Repository;import java.util.*;@Repository public interface UserRepository extends JpaRepository<User,UUID>{@EntityGraph(attributePaths={"role","role.permissions","directPermissions"})Optional<User> findByEmail(String email);boolean existsByEmail(String email);boolean existsByEmailIgnoreCase(String email);@EntityGraph(attributePaths={"role","role.permissions","directPermissions"})Optional<User> findWithRoleAndPermissionsById(UUID id);}

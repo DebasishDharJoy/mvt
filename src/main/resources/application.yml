@@ -2,6 +2,18 @@ spring:
   application:
     name: mvt-backend
 
+  mail:
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: ${SMTP_AUTH:false}
+          starttls:
+            enable: ${SMTP_STARTTLS:false}
+
   # PostgreSQL Database Connection
   datasource:
     url: jdbc:postgresql://localhost:5432/mvt_db  # Update port and db name as needed

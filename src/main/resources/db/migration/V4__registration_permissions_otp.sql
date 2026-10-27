@@ -1,0 +1,18 @@
+ALTER TABLE users ADD COLUMN IF NOT EXISTS gender varchar(20);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS email_verified boolean NOT NULL DEFAULT false;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS must_change_password boolean NOT NULL DEFAULT false;
+UPDATE users SET gender=COALESCE(gender,'OTHER'),email_verified=true;
+ALTER TABLE patient_profiles ADD COLUMN IF NOT EXISTS country_code varchar(2);
+ALTER TABLE patient_profiles ADD COLUMN IF NOT EXISTS mobile_number varchar(20);
+ALTER TABLE patient_profiles ADD COLUMN IF NOT EXISTS whatsapp_same_as_mobile boolean NOT NULL DEFAULT false;
+ALTER TABLE patient_profiles ADD COLUMN IF NOT EXISTS whatsapp_number varchar(20);
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS country_code varchar(2);
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS mobile_number varchar(20);
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS whatsapp_same_as_mobile boolean NOT NULL DEFAULT false;
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS whatsapp_number varchar(20);
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS document_type varchar(30);
+ALTER TABLE care_partner_profiles ADD COLUMN IF NOT EXISTS document_number varchar(150);
+CREATE TABLE IF NOT EXISTS user_permissions(user_id uuid NOT NULL REFERENCES users(id) ON DELETE CASCADE,permission_id uuid NOT NULL REFERENCES permissions(id) ON DELETE CASCADE,PRIMARY KEY(user_id,permission_id));
+CREATE TABLE IF NOT EXISTS business_id_sequences(kind varchar(20) PRIMARY KEY,next_value bigint NOT NULL CHECK(next_value>=1001));
+INSERT INTO business_id_sequences VALUES('PATIENT',1001),('AGENT',1001) ON CONFLICT DO NOTHING;
+CREATE TABLE IF NOT EXISTS email_verification_challenges(id uuid PRIMARY KEY,created_by varchar(255),updated_by varchar(255),created_at timestamp NOT NULL,updated_at timestamp NOT NULL,is_active boolean NOT NULL DEFAULT true,is_deleted boolean NOT NULL DEFAULT false,email varchar(320) NOT NULL,purpose varchar(40) NOT NULL,otp_hash varchar(255) NOT NULL,expires_at timestamp NOT NULL,attempt_count integer NOT NULL DEFAULT 0,consumed_at timestamp);

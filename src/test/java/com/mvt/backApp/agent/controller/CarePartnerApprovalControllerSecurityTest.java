@@ -2,7 +2,7 @@ package com.mvt.backApp.agent.controller;
 
 import com.mvt.backApp.agent.service.CarePartnerApprovalService;
 import com.mvt.backApp.common.security.PermissionNames;
-import com.mvt.backApp.common.service.MessageService;
+import com.mvt.backApp.common.service.ApiResponseFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,16 +16,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = CarePartnerApprovalControllerSecurityTest.TestConfig.class)
+@ContextConfiguration(
+        classes = CarePartnerApprovalControllerSecurityTest.TestConfig.class
+)
 class CarePartnerApprovalControllerSecurityTest {
 
     @org.springframework.beans.factory.annotation.Autowired
-    CarePartnerApprovalController controller;
+    private CarePartnerApprovalController controller;
 
     @AfterEach
     void clearContext() {
@@ -53,7 +57,7 @@ class CarePartnerApprovalControllerSecurityTest {
                 new UsernamePasswordAuthenticationToken(
                         "test-admin",
                         null,
-                        java.util.List.of(new SimpleGrantedAuthority(authority))
+                        List.of(new SimpleGrantedAuthority(authority))
                 )
         );
     }
@@ -68,16 +72,19 @@ class CarePartnerApprovalControllerSecurityTest {
         }
 
         @Bean
-        MessageService messageService() {
-            return mock(MessageService.class);
+        ApiResponseFactory apiResponseFactory() {
+            return mock(ApiResponseFactory.class);
         }
 
         @Bean
         CarePartnerApprovalController carePartnerApprovalController(
                 CarePartnerApprovalService service,
-                MessageService messageService
+                ApiResponseFactory apiResponseFactory
         ) {
-            return new CarePartnerApprovalController(service, messageService);
+            return new CarePartnerApprovalController(
+                    service,
+                    apiResponseFactory
+            );
         }
     }
 }

@@ -1,13 +1,1 @@
-package com.mvt.backApp.user.repository;
-
-import com.mvt.backApp.user.entity.Permission;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
-
-@Repository
-public interface PermissionRepository extends JpaRepository<Permission, UUID> {
-    Optional<Permission> findByName(String name);
-}
+package com.mvt.backApp.user.repository;import com.mvt.backApp.user.entity.Permission;import org.springframework.data.jpa.repository.JpaRepository;import org.springframework.stereotype.Repository;import java.util.*;@Repository public interface PermissionRepository extends JpaRepository<Permission,UUID>{Optional<Permission> findByName(String name);List<Permission> findAllByNameIn(Collection<String> names);}

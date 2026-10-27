@@ -1,16 +1,11 @@
 package com.mvt.backApp.common.dto;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-@Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
+import lombok.*;
+@Data @Builder @NoArgsConstructor @AllArgsConstructor
 public class ApiResponse<T> {
-    private String message;
+    private String messageKey;
+    private String defaultMessage;
+    private String localizedMessage;
+    private String requestedLanguage;
     private int status;
     private String success;
     private T data;
