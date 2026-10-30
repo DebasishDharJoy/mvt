@@ -2,85 +2,203 @@ spring:
   application:
     name: mvt-backend
 
-  mail:
-    host: ${SMTP_HOST:localhost}
-    port: ${SMTP_PORT:1025}
-    username: ${SMTP_USERNAME:}
-    password: ${SMTP_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: ${SMTP_AUTH:false}
-          starttls:
-            enable: ${SMTP_STARTTLS:false}
+  # ---------------------------------------------------------
+  # Email
+  # ---------------------------------------------------------
+  app:
 
-  # PostgreSQL Database Connection
+    # Existing configuration such as jwt, cors, storage and
+
+    # bootstrap remains here.
+
+    mail:
+
+      accounts:
+
+        # ======================================================
+
+        # OTP / AUTHENTICATION EMAIL
+
+        #
+
+        # This is the default JavaMailSender used by existing
+
+        # code that injects JavaMailSender without a qualifier.
+
+        # ======================================================
+
+        otp:
+          host: ${OTP_SMTP_HOST}
+          port: ${OTP_SMTP_PORT:587}
+
+          username: ${OTP_SMTP_USERNAME:}
+          password: ${OTP_SMTP_PASSWORD:}
+
+          from-address: ${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}
+          from-name: ${OTP_MAIL_FROM_NAME:Healthcare MVT}
+
+          smtp-auth: ${OTP_SMTP_AUTH:true}
+          starttls: ${OTP_SMTP_STARTTLS:true}
+
+        # ======================================================
+
+        # GENERAL APPLICATION NOTIFICATIONS
+
+        #
+
+        # Defaults to the OTP SMTP account if a separate account
+
+        # is not configured.
+
+        # ======================================================
+
+        notification:
+          host: ${NOTIFICATION_SMTP_HOST:${OTP_SMTP_HOST}}
+          port: ${NOTIFICATION_SMTP_PORT:${OTP_SMTP_PORT:587}}
+
+          username: ${NOTIFICATION_SMTP_USERNAME:${OTP_SMTP_USERNAME:}}
+          password: ${NOTIFICATION_SMTP_PASSWORD:${OTP_SMTP_PASSWORD:}}
+
+          from-address: ${NOTIFICATION_MAIL_FROM_ADDRESS:${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}}
+          from-name: ${NOTIFICATION_MAIL_FROM_NAME:Healthcare MVT Notifications}
+
+          smtp-auth: ${NOTIFICATION_SMTP_AUTH:${OTP_SMTP_AUTH:true}}
+          starttls: ${NOTIFICATION_SMTP_STARTTLS:${OTP_SMTP_STARTTLS:true}}
+
+        # ======================================================
+
+        # SUPPORT EMAIL
+
+        #
+
+        # Also defaults to the OTP account until a separate
+
+        # support SMTP account is configured.
+
+        # ======================================================
+
+        support:
+          host: ${SUPPORT_SMTP_HOST:${OTP_SMTP_HOST}}
+          port: ${SUPPORT_SMTP_PORT:${OTP_SMTP_PORT:587}}
+
+          username: ${SUPPORT_SMTP_USERNAME:${OTP_SMTP_USERNAME:}}
+          password: ${SUPPORT_SMTP_PASSWORD:${OTP_SMTP_PASSWORD:}}
+
+          from-address: ${SUPPORT_MAIL_FROM_ADDRESS:${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}}
+          from-name: ${SUPPORT_MAIL_FROM_NAME:Healthcare MVT Support}
+
+          smtp-auth: ${SUPPORT_SMTP_AUTH:${OTP_SMTP_AUTH:true}}
+          starttls: ${SUPPORT_SMTP_STARTTLS:${OTP_SMTP_STARTTLS:true}}
+
+
+  # ---------------------------------------------------------
+  # PostgreSQL
+  # No database credentials are stored in source code.
+  # ---------------------------------------------------------
   datasource:
-    url: jdbc:postgresql://localhost:5432/mvt_db  # Update port and db name as needed
-    username: postgres
-#    password: debasish
-    password: postgres
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/mvt_db}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
     hikari:
-      maximum-pool-size: 10
-      minimum-idle: 5
+      # Conservative defaults for your small OCI test VM.
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:5}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
 
-
+  # ---------------------------------------------------------
+  # Database migration
+  # Currently disabled because this project is presently using
+  # Hibernate schema update for the development/test deployment.
+  # ---------------------------------------------------------
   flyway:
-    enabled: false
-#    locations: classpath:db/migration
-#    validate-on-migrate: true
+    enabled: ${FLYWAY_ENABLED:false}
+    locations: classpath:db/migration
+    validate-on-migrate: true
 
-
-  # JPA / Hibernate Configuration
+  # ---------------------------------------------------------
+  # JPA / Hibernate
+  # ---------------------------------------------------------
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
     hibernate:
-      ddl-auto: update # Use 'validate' in production!
-    show-sql: true
+      ddl-auto: ${HIBERNATE_DDL_AUTO:update}
+
+    show-sql: ${JPA_SHOW_SQL:false}
+
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${HIBERNATE_FORMAT_SQL:false}
 
-
+  # ---------------------------------------------------------
+  # Internationalisation
+  # ---------------------------------------------------------
   messages:
     basename: messages
     encoding: UTF-8
     fallback-to-system-locale: false
 
-    servlet:
-      multipart:
-        max-file-size: ${MAX_UPLOAD_FILE_SIZE:10MB}
-        max-request-size: ${MAX_UPLOAD_REQUEST_SIZE:10MB}
+  # ---------------------------------------------------------
+  # Multipart uploads
+  # ---------------------------------------------------------
+  servlet:
+    multipart:
+      max-file-size: ${MAX_UPLOAD_FILE_SIZE:10MB}
+      max-request-size: ${MAX_UPLOAD_REQUEST_SIZE:10MB}
 
 
-# Custom Application Properties
+# ===========================================================
+# MVT application configuration
+# ===========================================================
 app:
-  jwt:
-    # Use a secure, random 256-bit string in production
-    secret: "ThisIsASuperSecretKeyForJwtSignatureWhichMustBeAtLeast32BytesLong"
-    expiration-ms: 86400000 # 24 hours
 
+  # ---------------------------------------------------------
+  # JWT authentication
+  # JWT_SECRET must be supplied externally.
+  # ---------------------------------------------------------
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+  # ---------------------------------------------------------
+  # CORS
+  # During initial OCI testing use the public HTTP origin.
+  # Later change this to the HTTPS domain.
+  # ---------------------------------------------------------
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
 
-
+  # ---------------------------------------------------------
+  # Document storage
+  # Local storage is temporary for this test environment.
+  # ---------------------------------------------------------
   storage:
-    # 'local' for development, 'oci' for production
-    provider: local
-    local:
-      upload-dir: ./uploads/documents
-    oci:
-      bucket-name: mvt-documents
-      namespace: your_oci_namespace
+    provider: ${STORAGE_PROVIDER:local}
 
+    local:
+      upload-dir: ${UPLOAD_DIR:./uploads/documents}
+
+    oci:
+      bucket-name: ${OCI_STORAGE_BUCKET:mvt-documents}
+      namespace: ${OCI_STORAGE_NAMESPACE:}
+
+  # ---------------------------------------------------------
+  # Application data bootstrap
+  #
+  # Keep disabled normally.
+  # Enable for initial database bootstrap only.
+  # ---------------------------------------------------------
   bootstrap:
     enabled: ${MVT_BOOTSTRAP_ENABLED:false}
+
     super-admin:
-      email: ${MVT_BOOTSTRAP_SUPER_ADMIN_EMAIL:superadmin@gmail.com}
-      password: ${MVT_BOOTSTRAP_SUPER_ADMIN_PASSWORD:PostgrsSuper!123}
-      first-name: ${MVT_BOOTSTRAP_SUPER_ADMIN_FIRST_NAME:Super}
-      last-name: ${MVT_BOOTSTRAP_SUPER_ADMIN_LAST_NAME:Admin}
+      email: ${MVT_BOOTSTRAP_SUPER_ADMIN_EMAIL:}
+      password: ${MVT_BOOTSTRAP_SUPER_ADMIN_PASSWORD:}
+      first-name: ${MVT_BOOTSTRAP_SUPER_ADMIN_FIRST_NAME:}
+      last-name: ${MVT_BOOTSTRAP_SUPER_ADMIN_LAST_NAME:}
+
+    # Optional delegated ADMIN account
     admin:
       enabled: ${MVT_BOOTSTRAP_ADMIN_ENABLED:false}
       email: ${MVT_BOOTSTRAP_ADMIN_EMAIL:}
@@ -89,6 +207,12 @@ app:
       last-name: ${MVT_BOOTSTRAP_ADMIN_LAST_NAME:}
       permissions: ${MVT_BOOTSTRAP_ADMIN_PERMISSIONS:}
 
-#  logging:
-#    level:
-#      org.flywaydb: ${FLYWAY_LOG_LEVEL:INFO}
+
+# ===========================================================
+# Logging
+# ===========================================================
+logging:
+  level:
+    root: ${ROOT_LOG_LEVEL:INFO}
+    org.flywaydb: ${FLYWAY_LOG_LEVEL:INFO}
+    org.hibernate.SQL: ${HIBERNATE_SQL_LOG_LEVEL:WARN}
