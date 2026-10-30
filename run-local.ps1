@@ -1,56 +1,55 @@
-$ErrorActionPre*erence = "Stop"
+$ErrorActionPreference = "Stop"
 
-$envFile = Join-P*th $PSScriptRoot ".env.local"
+$envFile = Join-Path $PSScriptRoot ".env.local"
 
-if *-not (Test-Path $envFile)) {
-    t*row "Missing local environment fil*: $envFile"
+if (-not (Test-Path $envFile)) {
+    throw "Missing local environment file: $envFile"
 }
 
-Write-Host "Loading*Healthcare MVT local environment..*"
+Write-Host "Loading Healthcare MVT local environment..."
 
-Get-Content $envFile |
-    ForE*ch-Object {
+Get-Content $envFile | ForEach-Object {
+    $line = $_.Trim()
 
-        $line = $_.Tr*m()
+    # Ignore blank lines.
+    if ([string]::IsNullOrWhiteSpace($line)) {
+        return
+    }
 
-        # Ignore blank lines.*        if ([string]::IsNullOrWhit*Space($line)) {
-            return*        }
+    # Ignore comments.
+    if ($line.StartsWith("#")) {
+        return
+    }
 
-        # Ignore commen*s.
-        if ($line.StartsWith("#*)) {
-            return
-        }
-*        # Ignore malformed lines w*thout '='.
-        if (-not $line.*ontains("=")) {
-            return*        }
+    # Ignore malformed lines without '='.
+    if (-not $line.Contains("=")) {
+        return
+    }
 
-        $name, $value =*$line -split "=", 2
+    $name, $value = $line -split "=", 2
 
-        $name*= $name.Trim()
-        $value = $v*lue.Trim()
+    $name = $name.Trim()
+    $value = $value.Trim()
 
-        if ([string]::*sNullOrWhiteSpace($name)) {
-      *     return
-        }
+    if ([string]::IsNullOrWhiteSpace($name)) {
+        return
+    }
 
-        # O*tional convenience:
-        # allo* values wrapped in single or doubl* quotes.
-        if (
-            *$value.StartsWith('"') -and $value*EndsWith('"')) -or
-            ($v*lue.StartsWith("'*) -and $value.EndsWith("'*))
-        ) {
-            $value * $value.Substring(1, $value.Length*- 2)
-        }
+    # Optional convenience:
+    # allow values wrapped in single or double quotes.
+    if (
+        ($value.StartsWith('"') -and $value.EndsWith('"')) -or
+        ($value.StartsWith("'") -and $value.EndsWith("'"))
+    ) {
+        $value = $value.Substring(1, $value.Length - 2)
+    }
 
-        [Environme*t]::SetEnvironmentVariable(
-      *     $name,
-            $value,
-  *         "Process"
-        )
-    }*
+    [Environment]::SetEnvironmentVariable($name, $value, "Process")
+}
+
 Write-Host "Environment loaded."
-*rite-Host "Starting Healthcare MVT*backend..."
+Write-Host "Starting Healthcare MVT backend..."
 
-& "$PSScriptRoot\mvnw*cmd" spring-boot:run
+& "$PSScriptRoot\mvnw.cmd" spring-boot:run
 
-exit $LASTEX*TCODE
+exit $LASTEXITCODE
