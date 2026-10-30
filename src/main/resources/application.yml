@@ -28,17 +28,21 @@ spring:
         # ======================================================
 
         otp:
-          host: ${OTP_SMTP_HOST}
-          port: ${OTP_SMTP_PORT:587}
+          host: ${OTP_SMTP_HOST:localhost}
+          port: ${OTP_SMTP_PORT:1025}
 
           username: ${OTP_SMTP_USERNAME:}
           password: ${OTP_SMTP_PASSWORD:}
 
-          from-address: ${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}
+          from-address: ${OTP_MAIL_FROM_ADDRESS:no-reply@example.invalid}
           from-name: ${OTP_MAIL_FROM_NAME:Healthcare MVT}
 
-          smtp-auth: ${OTP_SMTP_AUTH:true}
-          starttls: ${OTP_SMTP_STARTTLS:true}
+          smtp-auth: ${OTP_SMTP_AUTH:false}
+          starttls: ${OTP_SMTP_STARTTLS:false}
+
+          connection-timeout-ms: ${OTP_SMTP_CONNECTION_TIMEOUT_MS:10000}
+          read-timeout-ms: ${OTP_SMTP_READ_TIMEOUT_MS:10000}
+          write-timeout-ms: ${OTP_SMTP_WRITE_TIMEOUT_MS:10000}
 
         # ======================================================
 
@@ -53,17 +57,21 @@ spring:
         # ======================================================
 
         notification:
-          host: ${NOTIFICATION_SMTP_HOST:${OTP_SMTP_HOST}}
-          port: ${NOTIFICATION_SMTP_PORT:${OTP_SMTP_PORT:587}}
+          host: ${NOTIFICATION_SMTP_HOST:localhost}
+          port: ${NOTIFICATION_SMTP_PORT:1025}
 
-          username: ${NOTIFICATION_SMTP_USERNAME:${OTP_SMTP_USERNAME:}}
-          password: ${NOTIFICATION_SMTP_PASSWORD:${OTP_SMTP_PASSWORD:}}
+          username: ${NOTIFICATION_SMTP_USERNAME:}
+          password: ${NOTIFICATION_SMTP_PASSWORD:}
 
-          from-address: ${NOTIFICATION_MAIL_FROM_ADDRESS:${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}}
+          from-address: ${NOTIFICATION_MAIL_FROM_ADDRESS:no-reply@example.invalid}
           from-name: ${NOTIFICATION_MAIL_FROM_NAME:Healthcare MVT Notifications}
 
-          smtp-auth: ${NOTIFICATION_SMTP_AUTH:${OTP_SMTP_AUTH:true}}
-          starttls: ${NOTIFICATION_SMTP_STARTTLS:${OTP_SMTP_STARTTLS:true}}
+          smtp-auth: ${NOTIFICATION_SMTP_AUTH:false}
+          starttls: ${NOTIFICATION_SMTP_STARTTLS:false}
+
+          connection-timeout-ms: ${NOTIFICATION_SMTP_CONNECTION_TIMEOUT_MS:10000}
+          read-timeout-ms: ${NOTIFICATION_SMTP_READ_TIMEOUT_MS:10000}
+          write-timeout-ms: ${NOTIFICATION_SMTP_WRITE_TIMEOUT_MS:10000}
 
         # ======================================================
 
@@ -78,17 +86,21 @@ spring:
         # ======================================================
 
         support:
-          host: ${SUPPORT_SMTP_HOST:${OTP_SMTP_HOST}}
-          port: ${SUPPORT_SMTP_PORT:${OTP_SMTP_PORT:587}}
+          host: ${SUPPORT_SMTP_HOST:localhost}
+          port: ${SUPPORT_SMTP_PORT:1025}
 
-          username: ${SUPPORT_SMTP_USERNAME:${OTP_SMTP_USERNAME:}}
-          password: ${SUPPORT_SMTP_PASSWORD:${OTP_SMTP_PASSWORD:}}
+          username: ${SUPPORT_SMTP_USERNAME:}
+          password: ${SUPPORT_SMTP_PASSWORD:}
 
-          from-address: ${SUPPORT_MAIL_FROM_ADDRESS:${OTP_MAIL_FROM_ADDRESS:${OTP_SMTP_USERNAME}}}
+          from-address: ${SUPPORT_MAIL_FROM_ADDRESS:no-reply@example.invalid}
           from-name: ${SUPPORT_MAIL_FROM_NAME:Healthcare MVT Support}
 
-          smtp-auth: ${SUPPORT_SMTP_AUTH:${OTP_SMTP_AUTH:true}}
-          starttls: ${SUPPORT_SMTP_STARTTLS:${OTP_SMTP_STARTTLS:true}}
+          smtp-auth: ${SUPPORT_SMTP_AUTH:false}
+          starttls: ${SUPPORT_SMTP_STARTTLS:false}
+
+          connection-timeout-ms: ${SUPPORT_SMTP_CONNECTION_TIMEOUT_MS:10000}
+          read-timeout-ms: ${SUPPORT_SMTP_READ_TIMEOUT_MS:10000}
+          write-timeout-ms: ${SUPPORT_SMTP_WRITE_TIMEOUT_MS:10000}
 
 
   # ---------------------------------------------------------
@@ -144,8 +156,8 @@ spring:
   # ---------------------------------------------------------
   servlet:
     multipart:
-      max-file-size: ${MAX_UPLOAD_FILE_SIZE:10MB}
-      max-request-size: ${MAX_UPLOAD_REQUEST_SIZE:10MB}
+      max-file-size: ${MAX_UPLOAD_FILE_SIZE:2MB}
+      max-request-size: ${MAX_UPLOAD_REQUEST_SIZE:2MB}
 
 
 # ===========================================================

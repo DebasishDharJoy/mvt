@@ -50,66 +50,66 @@ public class MailConfig {
     }
 
 
-//    @Bean(name = "notificationMailSender")
-//    public JavaMailSender notificationMailSender(
-//            @Value("${app.mail.accounts.notification.host}")
-//            String host,
-//
-//            @Value("${app.mail.accounts.notification.port:587}")
-//            int port,
-//
-//            @Value("${app.mail.accounts.notification.username:}")
-//            String username,
-//
-//            @Value("${app.mail.accounts.notification.password:}")
-//            String password,
-//
-//            @Value("${app.mail.accounts.notification.smtp-auth:true}")
-//            boolean authenticationEnabled,
-//
-//            @Value("${app.mail.accounts.notification.starttls:true}")
-//            boolean startTlsEnabled
-//    ) {
-//        return createMailSender(
-//                host,
-//                port,
-//                username,
-//                password,
-//                authenticationEnabled,
-//                startTlsEnabled
-//        );
-//    }
-//
-//
-//    @Bean(name = "supportMailSender")
-//    public JavaMailSender supportMailSender(
-//            @Value("${app.mail.accounts.support.host}")
-//            String host,
-//
-//            @Value("${app.mail.accounts.support.port:587}")
-//            int port,
-//
-//            @Value("${app.mail.accounts.support.username:}")
-//            String username,
-//
-//            @Value("${app.mail.accounts.support.password:}")
-//            String password,
-//
-//            @Value("${app.mail.accounts.support.smtp-auth:true}")
-//            boolean authenticationEnabled,
-//
-//            @Value("${app.mail.accounts.support.starttls:true}")
-//            boolean startTlsEnabled
-//    ) {
-//        return createMailSender(
-//                host,
-//                port,
-//                username,
-//                password,
-//                authenticationEnabled,
-//                startTlsEnabled
-//        );
-//    }
+    @Bean(name = "notificationMailSender")
+    public JavaMailSender notificationMailSender(
+            @Value("${app.mail.accounts.notification.host}")
+            String host,
+
+            @Value("${app.mail.accounts.notification.port:587}")
+            int port,
+
+            @Value("${app.mail.accounts.notification.username:}")
+            String username,
+
+            @Value("${app.mail.accounts.notification.password:}")
+            String password,
+
+            @Value("${app.mail.accounts.notification.smtp-auth:true}")
+            boolean authenticationEnabled,
+
+            @Value("${app.mail.accounts.notification.starttls:true}")
+            boolean startTlsEnabled
+    ) {
+        return createMailSender(
+                host,
+                port,
+                username,
+                password,
+                authenticationEnabled,
+                startTlsEnabled
+        );
+    }
+
+
+    @Bean(name = "supportMailSender")
+    public JavaMailSender supportMailSender(
+            @Value("${app.mail.accounts.support.host}")
+            String host,
+
+            @Value("${app.mail.accounts.support.port:587}")
+            int port,
+
+            @Value("${app.mail.accounts.support.username:}")
+            String username,
+
+            @Value("${app.mail.accounts.support.password:}")
+            String password,
+
+            @Value("${app.mail.accounts.support.smtp-auth:true}")
+            boolean authenticationEnabled,
+
+            @Value("${app.mail.accounts.support.starttls:true}")
+            boolean startTlsEnabled
+    ) {
+        return createMailSender(
+                host,
+                port,
+                username,
+                password,
+                authenticationEnabled,
+                startTlsEnabled
+        );
+    }
 
 
     private JavaMailSender createMailSender(
