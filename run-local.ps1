@@ -50,6 +50,6 @@ Get-Content $envFile | ForEach-Object {
 Write-Host "Environment loaded."
 Write-Host "Starting Healthcare MVT backend..."
 
-& "$PSScriptRoot\mvnw.cmd" spring-boot:run
+& mvn spring-boot:run
 
 exit $LASTEXITCODE
