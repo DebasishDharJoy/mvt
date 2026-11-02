@@ -3,107 +3,6 @@ spring:
     name: mvt-backend
 
   # ---------------------------------------------------------
-  # Email
-  # ---------------------------------------------------------
-  app:
-
-    # Existing configuration such as jwt, cors, storage and
-
-    # bootstrap remains here.
-
-    mail:
-
-      accounts:
-
-        # ======================================================
-
-        # OTP / AUTHENTICATION EMAIL
-
-        #
-
-        # This is the default JavaMailSender used by existing
-
-        # code that injects JavaMailSender without a qualifier.
-
-        # ======================================================
-
-        otp:
-          host: ${OTP_SMTP_HOST:localhost}
-          port: ${OTP_SMTP_PORT:1025}
-
-          username: ${OTP_SMTP_USERNAME:}
-          password: ${OTP_SMTP_PASSWORD:}
-
-          from-address: ${OTP_MAIL_FROM_ADDRESS:no-reply@example.invalid}
-          from-name: ${OTP_MAIL_FROM_NAME:Healthcare MVT}
-
-          smtp-auth: ${OTP_SMTP_AUTH:false}
-          starttls: ${OTP_SMTP_STARTTLS:false}
-
-          connection-timeout-ms: ${OTP_SMTP_CONNECTION_TIMEOUT_MS:10000}
-          read-timeout-ms: ${OTP_SMTP_READ_TIMEOUT_MS:10000}
-          write-timeout-ms: ${OTP_SMTP_WRITE_TIMEOUT_MS:10000}
-
-        # ======================================================
-
-        # GENERAL APPLICATION NOTIFICATIONS
-
-        #
-
-        # Defaults to the OTP SMTP account if a separate account
-
-        # is not configured.
-
-        # ======================================================
-
-        notification:
-          host: ${NOTIFICATION_SMTP_HOST:localhost}
-          port: ${NOTIFICATION_SMTP_PORT:1025}
-
-          username: ${NOTIFICATION_SMTP_USERNAME:}
-          password: ${NOTIFICATION_SMTP_PASSWORD:}
-
-          from-address: ${NOTIFICATION_MAIL_FROM_ADDRESS:no-reply@example.invalid}
-          from-name: ${NOTIFICATION_MAIL_FROM_NAME:Healthcare MVT Notifications}
-
-          smtp-auth: ${NOTIFICATION_SMTP_AUTH:false}
-          starttls: ${NOTIFICATION_SMTP_STARTTLS:false}
-
-          connection-timeout-ms: ${NOTIFICATION_SMTP_CONNECTION_TIMEOUT_MS:10000}
-          read-timeout-ms: ${NOTIFICATION_SMTP_READ_TIMEOUT_MS:10000}
-          write-timeout-ms: ${NOTIFICATION_SMTP_WRITE_TIMEOUT_MS:10000}
-
-        # ======================================================
-
-        # SUPPORT EMAIL
-
-        #
-
-        # Also defaults to the OTP account until a separate
-
-        # support SMTP account is configured.
-
-        # ======================================================
-
-        support:
-          host: ${SUPPORT_SMTP_HOST:localhost}
-          port: ${SUPPORT_SMTP_PORT:1025}
-
-          username: ${SUPPORT_SMTP_USERNAME:}
-          password: ${SUPPORT_SMTP_PASSWORD:}
-
-          from-address: ${SUPPORT_MAIL_FROM_ADDRESS:no-reply@example.invalid}
-          from-name: ${SUPPORT_MAIL_FROM_NAME:Healthcare MVT Support}
-
-          smtp-auth: ${SUPPORT_SMTP_AUTH:false}
-          starttls: ${SUPPORT_SMTP_STARTTLS:false}
-
-          connection-timeout-ms: ${SUPPORT_SMTP_CONNECTION_TIMEOUT_MS:10000}
-          read-timeout-ms: ${SUPPORT_SMTP_READ_TIMEOUT_MS:10000}
-          write-timeout-ms: ${SUPPORT_SMTP_WRITE_TIMEOUT_MS:10000}
-
-
-  # ---------------------------------------------------------
   # PostgreSQL
   # No database credentials are stored in source code.
   # ---------------------------------------------------------
@@ -181,6 +80,102 @@ app:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
 
+
+  # ---------------------------------------------------------
+  # Email
+  # ---------------------------------------------------------
+  mail:
+
+    accounts:
+
+      # ======================================================
+
+      # OTP / AUTHENTICATION EMAIL
+
+      #
+
+      # This is the default JavaMailSender used by existing
+
+      # code that injects JavaMailSender without a qualifier.
+
+      # ======================================================
+
+      otp:
+        host: ${OTP_SMTP_HOST:localhost}
+        port: ${OTP_SMTP_PORT:1025}
+
+        username: ${OTP_SMTP_USERNAME:}
+        password: ${OTP_SMTP_PASSWORD:}
+
+        from-address: ${OTP_MAIL_FROM_ADDRESS:no-reply@example.invalid}
+        from-name: ${OTP_MAIL_FROM_NAME:Healthcare MVT}
+
+        smtp-auth: ${OTP_SMTP_AUTH:false}
+        starttls: ${OTP_SMTP_STARTTLS:false}
+
+        connection-timeout-ms: ${OTP_SMTP_CONNECTION_TIMEOUT_MS:10000}
+        read-timeout-ms: ${OTP_SMTP_READ_TIMEOUT_MS:10000}
+        write-timeout-ms: ${OTP_SMTP_WRITE_TIMEOUT_MS:10000}
+
+      # ======================================================
+
+      # GENERAL APPLICATION NOTIFICATIONS
+
+      #
+
+      # Defaults to the OTP SMTP account if a separate account
+
+      # is not configured.
+
+      # ======================================================
+
+      notification:
+        host: ${NOTIFICATION_SMTP_HOST:localhost}
+        port: ${NOTIFICATION_SMTP_PORT:1025}
+
+        username: ${NOTIFICATION_SMTP_USERNAME:}
+        password: ${NOTIFICATION_SMTP_PASSWORD:}
+
+        from-address: ${NOTIFICATION_MAIL_FROM_ADDRESS:no-reply@example.invalid}
+        from-name: ${NOTIFICATION_MAIL_FROM_NAME:Healthcare MVT Notifications}
+
+        smtp-auth: ${NOTIFICATION_SMTP_AUTH:false}
+        starttls: ${NOTIFICATION_SMTP_STARTTLS:false}
+
+        connection-timeout-ms: ${NOTIFICATION_SMTP_CONNECTION_TIMEOUT_MS:10000}
+        read-timeout-ms: ${NOTIFICATION_SMTP_READ_TIMEOUT_MS:10000}
+        write-timeout-ms: ${NOTIFICATION_SMTP_WRITE_TIMEOUT_MS:10000}
+
+      # ======================================================
+
+      # SUPPORT EMAIL
+
+      #
+
+      # Also defaults to the OTP account until a separate
+
+      # support SMTP account is configured.
+
+      # ======================================================
+
+      support:
+        host: ${SUPPORT_SMTP_HOST:localhost}
+        port: ${SUPPORT_SMTP_PORT:1025}
+
+        username: ${SUPPORT_SMTP_USERNAME:}
+        password: ${SUPPORT_SMTP_PASSWORD:}
+
+        from-address: ${SUPPORT_MAIL_FROM_ADDRESS:no-reply@example.invalid}
+        from-name: ${SUPPORT_MAIL_FROM_NAME:Healthcare MVT Support}
+
+        smtp-auth: ${SUPPORT_SMTP_AUTH:false}
+        starttls: ${SUPPORT_SMTP_STARTTLS:false}
+
+        connection-timeout-ms: ${SUPPORT_SMTP_CONNECTION_TIMEOUT_MS:10000}
+        read-timeout-ms: ${SUPPORT_SMTP_READ_TIMEOUT_MS:10000}
+        write-timeout-ms: ${SUPPORT_SMTP_WRITE_TIMEOUT_MS:10000}
+
+
   # ---------------------------------------------------------
   # Document storage
   # Local storage is temporary for this test environment.
@@ -228,3 +223,5 @@ logging:
     root: ${ROOT_LOG_LEVEL:INFO}
     org.flywaydb: ${FLYWAY_LOG_LEVEL:INFO}
     org.hibernate.SQL: ${HIBERNATE_SQL_LOG_LEVEL:WARN}
+
+
