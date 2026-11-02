@@ -38,6 +38,7 @@ build/
 .env
 .env.*
 !.env.example
+.env.local
 
 # Local IDE configuration
 .idea/

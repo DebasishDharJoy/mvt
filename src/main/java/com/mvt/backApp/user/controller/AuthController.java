@@ -1,69 +1,42 @@
 package com.mvt.backApp.user.controller;
 
-import com.mvt.backApp.agent.dto.CarePartnerRegistrationDto;
-import com.mvt.backApp.agent.dto.CarePartnerRegistrationResponseDto;
-import com.mvt.backApp.agent.dto.CarePartnerRejectionRequestDto;
-import com.mvt.backApp.common.dto.ApiResponse;
-import com.mvt.backApp.common.dto.JwtResponseDto;
-import com.mvt.backApp.common.dto.LoginRequestDto;
-import com.mvt.backApp.common.service.MessageService;
-import com.mvt.backApp.patient.dto.PatientRegistrationDto;
-import com.mvt.backApp.patient.dto.PatientRegistrationResponseDto;
-import com.mvt.backApp.user.service.AuthService;
+import com.mvt.backApp.agent.dto.*;
+import com.mvt.backApp.common.dto.*;
+import com.mvt.backApp.common.service.ApiResponseFactory;
+import com.mvt.backApp.patient.dto.*;
+import com.mvt.backApp.user.dto.EmailOtpRequestDto;
+import com.mvt.backApp.user.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.*;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
-    private final AuthService authService;
-    private final MessageService messageService;
+    private final AuthService auth;
+    private final EmailOtpService otp;
+    private final ApiResponseFactory responses;
+
+    @PostMapping("/email-otp")
+    public ResponseEntity<ApiResponse<Void>> otp(@Valid @RequestBody EmailOtpRequestDto r) {
+        otp.send(r.getEmail(), r.getPurpose());
+        return ResponseEntity.accepted().body(responses.success("success.otp.sent", 202, null));
+    }
 
     @PostMapping(value = "/register/patient", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<PatientRegistrationResponseDto>> registerPatient(
-            @Valid @RequestBody PatientRegistrationDto request
-    ) {
-        PatientRegistrationResponseDto data = authService.registerPatient(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(
-                messageService.getMessage("success.registration.patient"),
-                HttpStatus.CREATED.value(),
-                "success",
-                data
-        ));
+    public ResponseEntity<ApiResponse<PatientRegistrationResponseDto>> patient(@Valid @RequestBody PatientRegistrationDto r) {
+        return ResponseEntity.status(201).body(responses.success("success.registration.patient", 201, auth.registerPatient(r)));
     }
 
     @PostMapping(value = "/register/care-partner", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ApiResponse<CarePartnerRegistrationResponseDto>> registerCarePartner(
-            @Valid @ModelAttribute CarePartnerRegistrationDto request
-    ) {
-        CarePartnerRegistrationResponseDto data = authService.registerCarePartner(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse<>(
-                messageService.getMessage("success.registration.carePartner"),
-                HttpStatus.CREATED.value(),
-                "success",
-                data
-        ));
+    public ResponseEntity<ApiResponse<CarePartnerRegistrationResponseDto>> partner(@Valid @ModelAttribute CarePartnerRegistrationDto r) {
+        return ResponseEntity.status(201).body(responses.success("success.registration.carePartner", 201, auth.registerCarePartner(r)));
     }
 
-    @PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ApiResponse<JwtResponseDto>> login(
-            @Valid @RequestBody LoginRequestDto request
-    ) {
-        JwtResponseDto data = authService.login(request);
-        return ResponseEntity.ok(new ApiResponse<>(
-                messageService.getMessage("success.auth.login"),
-                HttpStatus.OK.value(),
-                "success",
-                data
-        ));
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<JwtResponseDto>> login(@Valid @RequestBody LoginRequestDto r) {
+        return ResponseEntity.ok(responses.success("success.auth.login", 200, auth.login(r)));
     }
 }

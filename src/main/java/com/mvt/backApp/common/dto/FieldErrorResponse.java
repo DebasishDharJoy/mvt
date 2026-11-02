@@ -1,9 +1,6 @@
 package com.mvt.backApp.common.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
@@ -12,5 +9,7 @@ import lombok.NoArgsConstructor;
 public class FieldErrorResponse {
     private String field;
     private String code;
-    private String message;
+    private String messageKey;
+    private String defaultMessage;
+    private String localizedMessage;
 }

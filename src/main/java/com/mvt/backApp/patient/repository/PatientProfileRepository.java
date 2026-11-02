@@ -1,16 +1,1 @@
-package com.mvt.backApp.patient.repository;
-
-import com.mvt.backApp.patient.entity.PatientProfile;
-import com.mvt.backApp.user.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.Optional;
-import java.util.UUID;
-
-@Repository
-public interface PatientProfileRepository extends JpaRepository<PatientProfile, UUID> {
-    Optional<PatientProfile> findByUser(User user);
-    Optional<PatientProfile> findByPatientId(String patientId);
-    boolean existsByPatientId(String patientId);
-}
+package com.mvt.backApp.patient.repository;import com.mvt.backApp.agent.entity.CarePartnerProfile;import com.mvt.backApp.patient.entity.PatientProfile;import org.springframework.data.domain.*;import org.springframework.data.jpa.repository.JpaRepository;import org.springframework.stereotype.Repository;import java.util.*;@Repository public interface PatientProfileRepository extends JpaRepository<PatientProfile,UUID>{boolean existsByPatientId(String patientId);Optional<PatientProfile> findByPatientId(String patientId);Page<PatientProfile> findAllByReferredBy(CarePartnerProfile partner,Pageable pageable);}

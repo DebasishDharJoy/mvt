@@ -1,0 +1,3 @@
+package com.mvt.backApp.common.validation;
+import jakarta.validation.*;import java.util.Objects;
+public class PasswordMatchesValidator implements ConstraintValidator<PasswordMatches,PasswordConfirmation>{public boolean isValid(PasswordConfirmation v,ConstraintValidatorContext c){if(v==null||v.getPassword()==null||v.getPassword().isBlank()||v.getConfirmPassword()==null||v.getConfirmPassword().isBlank()||Objects.equals(v.getPassword(),v.getConfirmPassword()))return true;c.disableDefaultConstraintViolation();c.buildConstraintViolationWithTemplate("{validation.confirmPassword.mismatch}").addPropertyNode("confirmPassword").addConstraintViolation();return false;}}

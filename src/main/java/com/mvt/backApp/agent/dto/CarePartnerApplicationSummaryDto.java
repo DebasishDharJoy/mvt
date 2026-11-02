@@ -1,8 +1,7 @@
 package com.mvt.backApp.agent.dto;
 
 import com.mvt.backApp.agent.entity.ApprovalStatus;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -11,11 +10,10 @@ import java.time.LocalDateTime;
 public class CarePartnerApplicationSummaryDto {
     String partnerId;
     String firstName;
-    String middleName;
     String lastName;
     String email;
     String companyName;
-    String country;
+    String countryCode;
     ApprovalStatus approvalStatus;
     LocalDateTime requestedAt;
 }
